@@ -1,0 +1,21 @@
+{% extends "auction/base.html" %}
+
+{% block content %}
+<h2>Barcha mahsulotlar</h2>
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4">
+        <div class="card mb-4">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 200px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ product.title }}</h5>
+                <p class="card-text">Boshlang'ich narx: {{ product.start_price }} so'm</p>
+                <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Ko'rish</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
