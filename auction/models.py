@@ -1,20 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-# Create your models here.
-
 
 class User(AbstractUser):
-    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)#nmaga bu yerda default ga 0.00 berilgan
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):
-
         return self.username
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
     def __str__(self):
         return self.name
+
 class Product(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
@@ -30,7 +28,6 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
-
 class Bid(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='bids')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -38,4 +35,4 @@ class Bid(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.amount} ({self.product.title})"
+        return f"{self.user.username} - {self.amount}"

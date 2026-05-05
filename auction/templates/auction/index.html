@@ -1,20 +1,78 @@
 {% extends "auction/base.html" %}
 
 {% block content %}
-<h2>Barcha mahsulotlar</h2>
-<div class="row">
+<!-- Qidiruv va Filtr bo'limi -->
+<div class="row mb-5">
+    <div class="col-md-12 text-center mb-4">
+        <h2 class="fw-bold display-6">Jonli Auksionlar</h2>
+        <p class="text-muted">O'zingizga yoqqan mahsulotni toping va narx taklif qiling</p>
+    </div>
+
+    <div class="col-md-10 offset-md-1">
+        <form method="GET" action="{% url 'index' %}" class="row g-2">
+            <!-- Matnli qidiruv -->
+            <div class="col-md-6">
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" name="q" class="form-control border-start-0 py-2" placeholder="Nima qidiramiz?" value="{{ request.GET.q }}">
+                </div>
+            </div>
+            <!-- Kategoriya tanlash -->
+            <div class="col-md-4">
+                <select name="category" class="form-select shadow-sm py-2">
+                    <option value="">Barcha kategoriyalar</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"i" %}selected{% endif %}>
+                            {{ cat.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <!-- Qidirish tugmasi -->
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">Qidirish</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<hr class="mb-5">
+
+<!-- Mahsulotlar ro'yxati -->
+<div class="row row-cols-1 row-cols-md-3 g-4">
     {% for product in products %}
-    <div class="col-md-4">
-        <div class="card mb-4">
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
             {% if product.image %}
-            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 200px; object-fit: cover;">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 250px; object-fit: cover; border-radius: 12px 12px 0 0;">
             {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ product.title }}</h5>
-                <p class="card-text">Boshlang'ich narx: {{ product.start_price }} so'm</p>
-                <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Ko'rish</a>
+
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="badge bg-light text-primary border">{{ product.category.name }}</span>
+                    <small class="text-danger fw-bold"><i class="bi bi-clock"></i> {{ product.end_time|timeuntil }}</small>
+                </div>
+                <h5 class="card-title fw-bold">{{ product.title }}</h5>
+                <p class="card-text text-muted small">{{ product.description|truncatewords:12 }}</p>
+
+                <div class="bg-light p-3 rounded-3 mb-3">
+                    <div class="small text-muted mb-1">Joriy narx:</div>
+                    <div class="h4 fw-bold text-success mb-0">
+                        {% if product.current_price %}{{ product.current_price }}{% else %}{{ product.start_price }}{% endif %} $
+                    </div>
+                </div>
+
+                <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-dark w-100 py-2 fw-bold">
+                    Batafsil ko'rish
+                </a>
             </div>
         </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <i class="bi bi-search-heart display-1 text-muted"></i>
+        <h4 class="mt-3 text-muted">Hech narsa topilmadi.</h4>
+        <a href="{% url 'index' %}" class="btn btn-link text-decoration-none">Barcha mahsulotlarni ko'rish</a>
     </div>
     {% endfor %}
 </div>

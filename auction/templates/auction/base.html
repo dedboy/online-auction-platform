@@ -2,26 +2,47 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Auktsion Platformasi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auksion Platformasi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; min-height: 100vh; display: flex; flex-direction: column; }
+        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.08); }
+        .btn-warning { font-weight: 700; color: #212529 !important; }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 py-3">
         <div class="container">
-            <a class="navbar-brand" href="/">Auction App</a>
-            <div class="text-white">
-                {% if user.is_authenticated %}
-                    Salom, {{ user.username }}! | <a href="/admin/logout/" class="btn btn-outline-danger btn-sm">Chiqish</a>
-                {% else %}
-                    <a href="/admin/login/" class="btn btn-outline-primary btn-sm">Kirish</a>
-                {% endif %}
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}"><i class="bi bi-hammer me-2"></i>ONLINE AUCTION</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Barcha mahsulotlar</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="btn btn-warning px-3 ms-lg-2 me-lg-3" href="{% url 'add_product' %}"><i class="bi bi-plus-circle me-1"></i> Sotish</a></li>
+                        <li class="nav-item"><span class="nav-link text-warning fw-bold"><i class="bi bi-wallet2 me-1"></i>{{ user.balance }} $</span></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"><i class="bi bi-person-circle me-1"></i>{{ user.username }}</a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li><a class="dropdown-item" href="{% url 'my_bids' %}"><i class="bi bi-list-stars me-2"></i>Mening stavkalarim</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post" class="px-3">{% csrf_token %}<button type="submit" class="btn btn-sm btn-danger w-100">Chiqish</button></form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Kirish</a></li>
+                        <li class="nav-item"><a class="btn btn-warning ms-lg-3" href="{% url 'signup' %}">Ro'yxatdan o'tish</a></li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
-
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
+    <main class="container pb-5" style="flex: 1;">{% block content %}{% endblock %}</main>
+    <footer class="bg-dark text-white py-4 mt-auto"><div class="container text-center"><p class="mb-0">&copy; 2026 Online Auction.</p></div></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -111,12 +111,16 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
-
 STATIC_URL = 'static/'
+
+# Custom User Model
 AUTH_USER_MODEL = 'auction.User'
 
+# Auth yo'naltirishlari
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
+
+# Media sozlamalari (Faqat bitta blok qoldiring)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'products'
+MEDIA_ROOT = BASE_DIR / 'media'
